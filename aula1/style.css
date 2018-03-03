@@ -1,0 +1,16 @@
+b {
+    display: block;
+}
+
+.impar {
+    color: #f00
+}
+
+.par {
+    color: #00f
+}
+
+.indefinido {
+    color: #CCC
+}
+
