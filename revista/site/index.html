@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <script type="text/javascript" src="plugins/turnjs4/extras/modernizr.2.5.3.min.js"></script>
+        <script src="plugins/pdfjs-1.9.426-dist/build/pdf.js"></script>
+    </head>
+    <body>
+        <div id="flipbook">
+            <div class="container">
+                <div class="flipbook">
+                    <div style="background-image:url(plugins/turnjs4/samples/basic/pages/1.jpg)"></div>
+                    <div style="background-image:url(plugins/turnjs4/samples/basic/pages/2.jpg)"></div>
+                    <div style="background-image:url(plugins/turnjs4/samples/basic/pages/3.jpg)"></div>
+                    <div style="background-image:url(plugins/turnjs4/samples/basic/pages/4.jpg)"></div>
+                    <div style="background-image:url(plugins/turnjs4/samples/basic/pages/5.jpg)"></div>
+                    <div style="background-image:url(plugins/turnjs4/samples/basic/pages/6.jpg)"></div>
+                    <div style="background-image:url(plugins/turnjs4/samples/basic/pages/7.jpg)"></div>
+                    <div style="background-image:url(plugins/turnjs4/samples/basic/pages/8.jpg)"></div>
+                    <div style="background-image:url(plugins/turnjs4/samples/basic/pages/9.jpg)"></div>
+                    <div style="background-image:url(plugins/turnjs4/samples/basic/pages/10.jpg)"></div>
+                    <div style="background-image:url(plugins/turnjs4/samples/basic/pages/11.jpg)"></div>
+                    <div style="background-image:url(plugins/turnjs4/samples/basic/pages/12.jpg)"></div>
+                </div>
+            </div>
+        </div>
+        <canvas id="the-canvas"></canvas>
+
+        <script src="js/jquery.js"></script>
+        <!--        <script src="plugins/turnjs4/lib/turn.min.js"></script>
+                <script src="plugins/turnjs4/lib/turn.html4.min.js"></script>-->
+
+        <script>
+            var pdfjsLib = window['pdfjs-dist/build/pdf'];
+
+            pdfjsLib.getDocument("revista.pdf").promise.then(function (pdf) {
+                console.log('PDF loaded');
+
+                // Fetch the first page
+                var pageNumber = 1;
+                pdf.getPage(pageNumber).then(function (page) {
+                    console.log('Page loaded');
+
+                    var scale = 1.5;
+                    var viewport = page.getViewport(scale);
+
+                    // Prepare canvas using PDF page dimensions
+                    var canvas = document.getElementById('the-canvas');
+                    var context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    // Render PDF page into canvas context
+                    var renderContext = {
+                        canvasContext: context,
+                        viewport: viewport
+                    };
+                    var renderTask = page.render(renderContext);
+                    renderTask.then(function () {
+                        console.log('Page rendered');
+                    });
+                });
+            }, function (reason) {
+                // PDF loading error
+                console.error(reason);
+            });
+
+            function loadApp() {
+                // Create the flipbook
+                $('.flipbook').turn({
+                    // Width
+                    width: 922,
+                    // Height
+                    height: 600,
+                    // Elevation
+                    elevation: 50,
+                    // Enable gradients
+                    gradients: true,
+                    // Auto center this flipbook
+                    autoCenter: true
+                });
+            }
+
+            // Load the HTML4 version if there's not CSS transform
+            yepnope({
+                test: Modernizr.csstransforms,
+                yep: ['plugins/turnjs4/lib/turn.js'],
+//                nope: ['plugins/turnjs4/lib/'],
+//                both: ['css/basic.css'],
+                complete: loadApp
+            });
+        </script>
+    </body>
+</html>
